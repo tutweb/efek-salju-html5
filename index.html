@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Membuat Efek Salju Dengan HTML5 | Jurnalweb.com</title>
+	<meta name="description" content="Tutorial cara membuat efek salju dengan html5 canvas dan javascript | Efek hujan salju ala musim dingin bisa dibuat dengan mudah untuk diterapkan di website">
+	<meta name="keywords" content="html5, canvas, html, css, javascript, tutorial, salju, efek salju, coding, programming, web development, web design">
+	<link href='https://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="header">
+	<h1>Efek Salju Dengan HTML5 Canvas & Javascript</h1>
+	<p>Baca tutorial di <a href="http://www.jurnalweb.com/membuat-efek-salju-dengan-html5-canvas-dan-javascript">Jurnalweb.com</a></p>
+</div>
+
+<canvas id="town" width="640" height="450"></canvas>
+
+<script type="text/javascript">
+
+var canvas = document.getElementById("town"),
+ctx = canvas.getContext("2d"),
+W = canvas.width,
+H = canvas.height,
+maxParticles = 25,
+maxParticleSize = 8,
+minParticleSize = 2,
+maxMove = 1,
+angle = 0,
+particles = [];
+	for (var i = 0; i < maxParticles; i++) {
+		particles.push({
+			x: Math.random() * W, 
+			y: Math.random() * H, 
+			wh: Math.random() * maxParticleSize + minParticleSize
+		})
+	}
+	
+function draw() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.beginPath();
+		for (var i = 0; i < maxParticles; i++) {
+			var p = particles[i];
+			ctx.moveTo(p.x, p.y);
+      ctx.rect(p.x, p.y, p.wh, p.wh);
+      var radgrad = ctx.createRadialGradient(p.x + p.wh/2,p.y + p.wh/2,0,p.x + p.wh/2,p.y + p.wh/2,p.wh/2);
+  radgrad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+  radgrad.addColorStop(0.5, 'rgba(255, 255, 255, .8)');
+  radgrad.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = radgrad;
+      ctx.fill();
+		}
+		update();
+	}
+	
+	function update() {
+		angle += 0.01;
+		for (var i = 0; i < maxParticles; i++) {
+			var p = particles[i];
+			p.y += Math.cos(angle) + p.wh/4;
+			p.x += Math.sin(angle) * 2;
+			if (p.x > W+maxMove || p.x < -maxMove || p.y > H) {
+				if (i%3 > 0) {
+					particles[i] = {x: Math.random() * W, y: -(maxMove), wh: p.wh };
+				} else {
+					if (Math.sin(angle) > 0) {
+						particles[i] = {x: -maxMove, y: Math.random()*H, wh: p.wh };
+					} else {
+						particles[i] = {x: W+maxMove, y: Math.random()*H, wh: p.wh };
+					}
+				}
+			}
+		}
+  requestAnimationFrame(draw);
+	}
+draw();	
+
+</script>
+
+</body>
+</html>
